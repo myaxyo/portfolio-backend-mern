@@ -89,15 +89,15 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ msg: "Invalid project ID" });
     }
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findByIdAndDelete(id);
     if (!project) {
-      return res.status(404).json({ msg: "Project not found" });
+      return res.status(404).send("Project not found");
     }
-    await project.remove();
     res.json({ msg: "Project removed" });
   } catch (error) {
     console.error(error);
